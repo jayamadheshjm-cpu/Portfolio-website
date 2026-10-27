@@ -1,6 +1,6 @@
 window.PORTFOLIO_PROFILE = {
   name: "JayaMadhesh",
-  profileImage:"assets\My Profile.jpeg",
+  profileImage:"assets/My Profile.jpeg",
   headline: "Animation student · Aspiring Hard Surface Modeler",
   college: "IIFA Lancaster Degree College",
   course: "B.Sc Animation & MultiMedia",
