@@ -1,11 +1,11 @@
 :root {
-  --bg: #0b0d12;
-  --panel: #141821;
-  --panel-light: #1a202b;
-  --text: #f4f6fb;
-  --muted: #a7afbf;
-  --accent: #d8ff3e;
-  --line: #2a3240;
+  --bg: #061525;
+  --panel: #0b2138;
+  --panel-light: #12304b;
+  --text: #eaf7ff;
+  --muted: #a2bfd4;
+  --accent: #42d9ff;
+  --line: #1b4563;
   --radius: 18px;
   --content-width: 1120px;
 }
