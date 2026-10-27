@@ -76,4 +76,11 @@ student-Portfolio/
     ├── My Profile.jpg
     └── models/
         ├── README.md
-        └── my-models.glb
+        ├── boat.glb
+        ├── GAS MASK.glb
+        ├── Jet Blend.glb
+        ├── Lantern.glb
+        ├── LEGO MAN.glb
+        ├── Ninja1.glb
+        ├── Robo Dog 2.glb
+        └── Upgrade Model with correct material1.glb
