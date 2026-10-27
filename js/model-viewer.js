@@ -52,26 +52,32 @@ function startViewer(object) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 1.4;
 
   host.appendChild(renderer.domElement);
 
-  // Soft, neutral studio lighting
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xe8e8e8, 2.2));
+  
+  // Bright, neutral studio lighting
+  scene.add(
+    new THREE.HemisphereLight(0xffffff, 0xf0f0f0, 3.0)
+  );
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.5);
+  // Main light: illuminates the front and top
+  const key = new THREE.DirectionalLight(0xffffff, 3.5);
   key.position.set(5, 8, 6);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xffffff, 1.5);
+  // Fill light: brightens darker areas
+  const fill = new THREE.DirectionalLight(0xffffff, 2.5);
   fill.position.set(-5, 3, 4);
   scene.add(fill);
 
-  const rim = new THREE.DirectionalLight(0xffffff, 1.0);
+  // Rim light: highlights the model edges
+  const rim = new THREE.DirectionalLight(0xffffff, 2.0);
   rim.position.set(-5, 3, -4);
   scene.add(rim);
 
-  // No grid: clean white studio surroundings
+  // No grid: clean white background
 
   // Orbit controls
   controls = new OrbitControls(camera, renderer.domElement);
