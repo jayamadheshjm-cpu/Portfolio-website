@@ -10,7 +10,7 @@ my creative work, technical skills, education, and ongoing projects.
 ---
 ### 🌐 View My Live Portfolio
 
-**[Open My Portfolio Website](https://jayamadheshjm-cpu.github.io/Portfolio-website/projects.html)**
+**[Open My Portfolio Website](https://jayamadheshjm-cpu.github.io/Portfolio-website/index.html)**
 
 
 ## 🌐 Website Overview
