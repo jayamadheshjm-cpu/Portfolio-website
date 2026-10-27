@@ -34,29 +34,131 @@ function createObjectLoader(model) {
   if (ext === "glb" || ext === "gltf") return new GLTFLoader().loadAsync(model.file).then(g => g.scene);
   throw new Error(`Unsupported model format .${ext}. Use FBX, GLB, or GLTF.`);
 }
+
 function startViewer(object) {
-  scene = new THREE.Scene(); scene.background = new THREE.Color("#0b0e14");
+  // Creates scene with a pure white background
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color("#ffffff");
+
+  // Camera
   camera = new THREE.PerspectiveCamera(45, 1, 0.01, 100000);
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+
+  // Renderer
+  renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: false
+  });
+
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+
   host.appendChild(renderer.domElement);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x30394c, 2.2));
-  const key = new THREE.DirectionalLight(0xffffff, 2.7); key.position.set(5, 8, 6); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xb6d1ff, 1.2); rim.position.set(-5, 3, -4); scene.add(rim);
-  const grid = new THREE.GridHelper(10, 20, 0x465164, 0x252d3a); grid.position.y = 0; scene.add(grid);
-  controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.07;
-  object.traverse(child => { if (child.isMesh) { if (!child.material) child.material = new THREE.MeshStandardMaterial({color:0xb8c3d5,roughness:.65}); (Array.isArray(child.material)?child.material:[child.material]).forEach(m=>{if(m.map)m.map.colorSpace=THREE.SRGBColorSpace;}); }});
-  const box = new THREE.Box3().setFromObject(object); if (box.isEmpty()) throw new Error("The model file contains no visible geometry.");
-  const size=box.getSize(new THREE.Vector3()), center=box.getCenter(new THREE.Vector3()); object.position.sub(center);
-  const grounded=new THREE.Box3().setFromObject(object); object.position.y-=grounded.min.y;
-  const maxDim=Math.max(size.x,size.y,size.z)||1, distance=maxDim*2.2;
-  camera.position.set(distance,distance*.7,distance); controls.target.set(0,Math.max(size.y*.42,.05),0);
-  controls.minDistance=maxDim*.03; controls.maxDistance=maxDim*30; camera.near=Math.max(maxDim/1000,.001); camera.far=Math.max(maxDim*100,1000); camera.updateProjectionMatrix(); controls.update();
-  scene.add(object); activeModel=object;
-  const resize=()=>{if(!renderer||!host.clientWidth)return;const w=host.clientWidth,h=host.clientHeight||440;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);};
-  observer=new ResizeObserver(resize); observer.observe(host); resize();
-  const animate=()=>{animationFrame=requestAnimationFrame(animate);controls?.update();if(renderer&&scene&&camera)renderer.render(scene,camera);}; animate();
+
+  // Soft, neutral studio lighting
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xe8e8e8, 2.2));
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.5);
+  key.position.set(5, 8, 6);
+  scene.add(key);
+
+  const fill = new THREE.DirectionalLight(0xffffff, 1.5);
+  fill.position.set(-5, 3, 4);
+  scene.add(fill);
+
+  const rim = new THREE.DirectionalLight(0xffffff, 1.0);
+  rim.position.set(-5, 3, -4);
+  scene.add(rim);
+
+  // No grid: clean white studio surroundings
+
+  // Orbit controls
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.07;
+
+  // Preserve model materials and textures
+  object.traverse(child => {
+    if (child.isMesh) {
+      if (!child.material) {
+        child.material = new THREE.MeshStandardMaterial({
+          color: 0xb8c3d5,
+          roughness: 0.65
+        });
+      }
+
+      (Array.isArray(child.material)
+        ? child.material
+        : [child.material]
+      ).forEach(material => {
+        if (material.map) {
+          material.map.colorSpace = THREE.SRGBColorSpace;
+        }
+      });
+    }
+  });
+
+  // Center and ground the model
+  const box = new THREE.Box3().setFromObject(object);
+
+  if (box.isEmpty()) {
+    throw new Error("The model file contains no visible geometry.");
+  }
+
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+
+  object.position.sub(center);
+
+  const grounded = new THREE.Box3().setFromObject(object);
+  object.position.y -= grounded.min.y;
+
+  // Camera framing
+  const maxDim = Math.max(size.x, size.y, size.z) || 1;
+  const distance = maxDim * 2.2;
+
+  camera.position.set(distance, distance * 0.7, distance);
+  controls.target.set(0, Math.max(size.y * 0.42, 0.05), 0);
+
+  controls.minDistance = maxDim * 0.03;
+  controls.maxDistance = maxDim * 30;
+
+  camera.near = Math.max(maxDim / 1000, 0.001);
+  camera.far = Math.max(maxDim * 100, 1000);
+  camera.updateProjectionMatrix();
+  controls.update();
+
+  scene.add(object);
+  activeModel = object;
+
+  // Responsive viewer
+  const resize = () => {
+    if (!renderer || !host.clientWidth) return;
+
+    const w = host.clientWidth;
+    const h = host.clientHeight || 440;
+
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  };
+
+  observer = new ResizeObserver(resize);
+  observer.observe(host);
+  resize();
+
+  // Animation loop
+  const animate = () => {
+    animationFrame = requestAnimationFrame(animate);
+    controls?.update();
+
+    if (renderer && scene && camera) {
+      renderer.render(scene, camera);
+    }
+  };
+
+  animate();
 }
 async function showModel(model) {
   const token=++loadToken;
