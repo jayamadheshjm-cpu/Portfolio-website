@@ -1,4 +1,4 @@
-# JayaAkash | 3D Modeling & Animation Portfolio
+# JayaMadhesh | 3D Modeling & Animation Portfolio
 
 A responsive personal portfolio showcasing my 3D modeling projects,
 hard-surface assets, character models, animation work, and interactive
@@ -24,7 +24,7 @@ The portfolio contains three main pages:
 - Responsive layout for desktop and mobile devices
 
 ### 2. Projects & 3D Showcase — `projects.html`
-- Project cards featuring selected modeling and animation work
+- Project cards featuring selected modeling work
 - Interactive 3D model viewer
 - Browser-based visualization of hosted 3D models
 - Local model preview for supported file formats
@@ -73,10 +73,7 @@ student-Portfolio/
 │
 └── assets/
     ├── profile-placeholder.svg
-    ├── Chormander ref 4.jpg
+    ├── My Profile.jpg
     └── models/
         ├── README.md
-        └── your-models.glb
-4. Publish the whole website folder—including `assets/models/`—to GitHub Pages or another static host. Visitors can then view the models in-browser; they do not need to download the source model files.
-
-The optional **Choose 3D file** control remains available for your own local previews. For the hosted gallery, visitors do not need to upload anything. A browser cannot launch a local server by itself when someone double-clicks `index.html`; use `START_PORTFOLIO.bat` for local testing or publish the site to static hosting for a public web link.
+        └── my-models.glb
